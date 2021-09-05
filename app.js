@@ -6,11 +6,17 @@ const mongoose = require('mongoose');
 const methodOverride =require('method-override');
 const session = require('express-session');
 const ExpressErrors = require('./utils/ExpressError');
-const campgrounds = require('./routes/campgrounds')
-const reviews= require('./routes/reviews');
+
+
+const campgroundsRoutes = require('./routes/campgrounds')
+const reviewsRoutes= require('./routes/reviews');
+const usersRoutes= require('./routes/user');
+
+
 const flash = require('connect-flash');
 const passport = require('passport');
 const LocalStrat = require('passport-local');
+const User = require('./models/user');
 
 
 //const Joi  = require('joi'); Error Handling through joi middleware "Schemas.js"
@@ -47,6 +53,13 @@ const sessionConfig = {
 app.use(session(sessionConfig));
 app.use(flash());
 
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrat(User.authenticate()));
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 app.use(express.urlencoded({extented: true}));
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname,'public')))
@@ -57,9 +70,9 @@ app.use((req,res,next) =>{
     next();
 })
 
-
-app.use('/campgrounds',campgrounds);
-app.use('/campgrounds/:id/reviews',reviews);
+app.use('/',usersRoutes);
+app.use('/campgrounds',campgroundsRoutes);
+app.use('/campgrounds/:id/reviews',reviewsRoutes);
 
 app.get('/',(req,res)=>{
     res.render('home');

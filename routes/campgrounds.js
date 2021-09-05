@@ -4,6 +4,7 @@ const {campgroundSchema } =  require('../Schemas.js');
 const Campground =require('../models/campground');
 const catchAsync = require('../utils/catchAsync');
 const ExpressErrors = require('../utils/ExpressError');
+const { isLoggedIn } = require('../middleware');
 
 
 //validating a camp info
@@ -25,12 +26,12 @@ router.get('/',async (req,res)=>{
         res.render('campgrounds/index',{campgrounds});
 })
 
-router.get('/new',(req,res)=>{
+router.get('/new',isLoggedIn,(req,res)=>{
         res.render('campgrounds/new')
 
 })
 
-router.post('/',validateCamp,catchAsync(async(req,res,next) => {
+router.post('/',isLoggedIn,validateCamp,catchAsync(async(req,res,next) => {
 //if(!req.body.campground) throw new ExpressErrors('Invalid Camoground Data',400);
         const campground = new Campground(req.body.campground);
         await campground.save();
@@ -49,7 +50,7 @@ router.get('/:id',catchAsync(async(req,res,next)=>{
 }))
 
 
-router.get('/:id/edit',catchAsync(async(req,res,next)=>{
+router.get('/:id/edit',isLoggedIn,catchAsync(async(req,res,next)=>{
         const campground = await Campground.findById(req.params.id)
         if(!campground){
                 req.flash('error','Cannot Find the Campground Sorry');
@@ -59,7 +60,7 @@ router.get('/:id/edit',catchAsync(async(req,res,next)=>{
 }))
 
 
-router.put('/:id',validateCamp,catchAsync (async(req,res,next)=>{
+router.put('/:id',isLoggedIn,validateCamp,catchAsync (async(req,res,next)=>{
         const {id} = req.params;
         const campground = await Campground.findByIdAndUpdate(id,{...req.body.campground})
         req.flash('success' , 'Successfully Updated Campground');
@@ -67,7 +68,7 @@ router.put('/:id',validateCamp,catchAsync (async(req,res,next)=>{
 }));
 
 
-router.delete('/:id',catchAsync (async(req,res,next)=>{
+router.delete('/:id',isLoggedIn,catchAsync (async(req,res,next)=>{
         const {id} = req.params;
         await Campground.findByIdAndDelete(id);
         req.flash('success' , 'Successfully Deleted Campground');

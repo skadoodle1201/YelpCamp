@@ -9,6 +9,9 @@ const ExpressErrors = require('./utils/ExpressError');
 const campgrounds = require('./routes/campgrounds')
 const reviews= require('./routes/reviews');
 const flash = require('connect-flash');
+const passport = require('passport');
+const LocalStrat = require('passport-local');
+
 
 //const Joi  = require('joi'); Error Handling through joi middleware "Schemas.js"
 

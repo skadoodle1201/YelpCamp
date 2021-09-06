@@ -5,9 +5,11 @@ const catchAsync = require('../utils/catchAsync');
 const { isLoggedIn,validateCamp,isAuthor } = require('../middleware');
 const campgrounds = require('../controllers/campgrounds');
 const { Router } = require('express');
+const multer = require('multer');
+const { storage } = require('../cloudinary');
+const upload = multer({ storage });
 
 
-//validating a camp info
 router.route('/')
         .get(campgrounds.index)
         .post(isLoggedIn,validateCamp,catchAsync(campgrounds.new))

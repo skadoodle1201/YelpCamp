@@ -1,5 +1,4 @@
 
-console.log(campground.geometry.coordinates)
 mapboxgl.accessToken = mapToken ;
 
 const map = new mapboxgl.Map({
@@ -19,3 +18,5 @@ new mapboxgl.Marker()
                     )
             )
         .addTo(map)
+
+map.addControl(new mapboxgl.NavigationControl());

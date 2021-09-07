@@ -12,10 +12,6 @@
                 <input class="form-control" type="text" id="location" name="campground[location]" required>
             </div>
             <div class="mb-3" >
-                <label for="image">Image:</label>
-                <input class="form-control" type="file" id="image" name="campground[image]" required multiple>
-            </div>
-            <div class="mb-3" >
                 <label for="description">Description</label>
                 <textarea class="form-control" type="text" id="description" name="campground[description]" required></textarea>
             </div>
@@ -24,7 +20,11 @@
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="price-label">$</span>
                     <input type="text" class="form-control" id="price" aria-label="price" placeholder="0.00" name="campground[price]" required>
-                  </div>
+                </div>
+            </div>
+            <div class="mb-3" >
+                <label for="image">Image:</label>
+                <input class="form-control" type="file" id="image" name="image" required multiple>
             </div>
             <div class= "mb-3">
                 <button class="btn btn-success">Create</button>

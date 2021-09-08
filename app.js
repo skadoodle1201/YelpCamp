@@ -13,6 +13,7 @@ const session = require('express-session');
 const ExpressErrors = require('./utils/ExpressError');
 const mongoSanitize = require('express-mongo-sanitize');
 const helmet = require('helmet');
+const MongoStore = require('connect-mongo');
 
 const campgroundsRoutes = require('./routes/campgrounds')
 const reviewsRoutes= require('./routes/reviews');
@@ -27,7 +28,9 @@ const User = require('./models/user');
 
 //const Joi  = require('joi'); Error Handling through joi middleware "Schemas.js"
 
-mongoose.connect('mongodb://localhost:27017/yelp-camp',{
+//const dbUrl = process.env.DB_URL;
+const dbUrl = 'mongodb://localhost:27017/yelp-camp';
+mongoose.connect(dbUrl,{
     useNewUrlParser: true,
     useUnifiedTopology: true,
     //useCreateIndex: true, works for older version of mongo
@@ -44,9 +47,22 @@ app.engine('ejs',ejsMate)
 app.set ('view engine','ejs')
 app.set('views',path.join(__dirname,'views'))
 
+const secret ='thisshouldbebetter';
+
+const store = new MongoStore({
+    mongoUrl: dbUrl,
+    secret,
+    touchAfter: 24 * 60 * 60 //24 hours
+});
+
+store.on('error', e => {
+    console.log('SESSION STORE ERROR', e);
+});
+
 const sessionConfig = { 
+    store: store,
     name:'session',
-    secret: 'thisshouldbebetter',
+    secret,
     resave: false,
     saveUninitialized : true,
     cookie:{
